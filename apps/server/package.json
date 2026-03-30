@@ -1,18 +1,21 @@
 {
   "name": "server",
   "module": "./src/server.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "bun --watch ./src/server.ts"
-  },
   "devDependencies": {
-    "@repo/types": "*",
     "@repo/eslint-config": "*",
+    "@repo/types": "*",
     "@repo/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/express": "^5.0.6"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {}
+  "scripts": {
+    "dev": "bun --env-file ../../.env --env-file .env --hot src/server.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "socket.io": "^4.8.3"
+  }
 }
