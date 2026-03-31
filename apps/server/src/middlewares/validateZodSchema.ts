@@ -1,12 +1,14 @@
+import { Errors } from "@repo/shared/common";
 import type { Response, Request, NextFunction } from "express";
-import type { ZodObject } from "zod";
+import { z, type ZodObject } from "zod";
 
 export function validateSchema(schema: ZodObject) {
     return (req: Request, res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body);
 
         if (!result.success) {
-            return res.status(400).json({ errors: result.error.flatten() });
+            console.log(z.treeifyError(result.error));
+            throw Errors.INVALID_CREDENTIALS;
         }
 
         req.body = result.data;

@@ -2,8 +2,10 @@ import type { Request, Response } from "express";
 import type { User } from "../generated/prisma/client";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/shared/env";
-import { Errors } from "@repo/shared/common";
+import { Errors, SALT_ROUNDS } from "@repo/shared/common";
 import { prisma } from "../libs/prisma";
+import type { registerData } from "@repo/shared";
+import bcrypt from "bcrypt";
 
 function generateToken(user: User) {
     const accessToken = jwt.sign({ userId: user.id }, env.JWT_SECRET, {
@@ -50,5 +52,26 @@ export async function refresh(req: Request, res: Response) {
 }
 
 export async function register(req: Request, res: Response) {
-    const data = req.body;
+    const data = req.body as registerData;
+    const existingUser = await prisma.user.findUnique({
+        where: {
+            username: data.username,
+        },
+    });
+
+    if (existingUser) throw Errors.USERNAME_TAKEN;
+
+    const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
+
+    const user = await prisma.user.create({
+        data: {
+            username: data.username,
+            passwordHash: hashedPassword,
+            publicKey: data.publicKey,
+        },
+    });
+
+    if (!user) throw Errors.INTERNAL;
+
+    return res.status(200).json({ success: true, user });
 }

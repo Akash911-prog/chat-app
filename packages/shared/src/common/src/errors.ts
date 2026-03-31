@@ -23,6 +23,7 @@ export const ErrorCode = {
     // general
     INTERNAL: "INTERNAL",
     NOT_FOUND: "NOT_FOUND",
+    USER_ALREADY_EXISTS: "USER_ALREADY_EXISTS",
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
@@ -65,4 +66,9 @@ export const Errors = {
     ),
     INTERNAL: new AppError("Something went wrong", 500, ErrorCode.INTERNAL),
     NOT_FOUND: new AppError("Resource not found", 404, ErrorCode.NOT_FOUND),
+    USER_ALREADY_EXISTS: new AppError(
+        "User with this username already exists",
+        409,
+        ErrorCode.USER_ALREADY_EXISTS,
+    ),
 } as const;
