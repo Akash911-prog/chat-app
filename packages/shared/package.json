@@ -1,9 +1,11 @@
 {
-    "name": "@repo/types",
+    "name": "@repo/shared",
     "version": "0.0.0",
     "private": true,
     "exports": {
-        "./*": "./src/*.tsx"
+        ".": "./src/types/types.ts",
+        "./env": "./src/env/index.ts",
+        "./common": "./src/common/src/index.ts"
     },
     "scripts": {
         "lint": "eslint . --max-warnings 0",
@@ -17,5 +19,7 @@
         "eslint": "^9.39.1",
         "typescript": "5.9.2"
     },
-    "dependencies": {}
+    "dependencies": {
+        "dotenv": "^17.3.1"
+    }
 }

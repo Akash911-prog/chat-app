@@ -1,4 +1,4 @@
-import { env } from "@repo/env";
+import { env } from "@repo/shared/env";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
 

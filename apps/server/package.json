@@ -3,10 +3,14 @@
   "module": "./src/server.ts",
   "devDependencies": {
     "@repo/eslint-config": "*",
-    "@repo/types": "*",
     "@repo/typescript-config": "*",
+    "@types/bcrypt": "^6.0.0",
     "@types/bun": "latest",
-    "@types/express": "^5.0.6"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/passport": "^1.0.17",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -19,10 +23,15 @@
   "type": "module",
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
-    "@repo/env": "*",
+    "@repo/shared": "*",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
     "helmet": "^8.1.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "prisma": "^7.6.0",
     "socket.io": "^4.8.3"
   }
