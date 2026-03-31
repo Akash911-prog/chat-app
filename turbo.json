@@ -15,7 +15,7 @@
         "!.next/cache/**"
       ],
       "env": [
-        "MONGODB_URI",
+        "DATABASE_URL",
         "NODE_ENV",
         "VITE_API_URL"
       ]

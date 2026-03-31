@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String    @id @default(uuid())
+  username     String    @unique
+  passwordHash String
+  role         Role      @default(USER)
+  publicKey    String
+  createdAt    DateTime  @default(now())
+  roomsAsA     Room[]    @relation("userA")
+  roomsAsB     Room[]    @relation("userB")
+  sentMessages Message[]
+}
+
+model Room {
+  id        String    @id @default(uuid())
+  userA     User      @relation(name: "userA", fields: [userAId], references: [id])
+  userB     User      @relation(name: "userB", fields: [userBId], references: [id])
+  userAId   String
+  userBId   String
+  messages  Message[]
+  createdAt DateTime  @default(now())
+
+  @@unique([userAId, userBId])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  room       Room     @relation(fields: [roomId], references: [id])
+  sender     User     @relation(fields: [senderId], references: [id])
+  cipherText String
+  iv         String
+  sentAt     DateTime @default(now())
+  roomId     String
+  senderId   String
+}
