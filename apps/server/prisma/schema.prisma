@@ -18,15 +18,17 @@ enum Role {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  username     String    @unique
-  passwordHash String
-  role         Role      @default(USER)
-  publicKey    String
-  createdAt    DateTime  @default(now())
-  roomsAsA     Room[]    @relation("userA")
-  roomsAsB     Room[]    @relation("userB")
-  sentMessages Message[]
+  id            String         @id @default(uuid())
+  username      String         @unique
+  passwordHash  String
+  role          Role           @default(USER)
+  publicKey     String
+  refreshToken  String?
+  createdAt     DateTime       @default(now())
+  roomsAsA      Room[]         @relation("userA")
+  roomsAsB      Room[]         @relation("userB")
+  sentMessages  Message[]
+  refreshTokens RefreshToken[]
 }
 
 model Room {
@@ -50,4 +52,14 @@ model Message {
   sentAt     DateTime @default(now())
   roomId     String
   senderId   String
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revoked   Boolean  @default(false)
 }

@@ -14,7 +14,7 @@ const schema = z.object({
 
     // server
     PORT: z.coerce.number().default(3001),
-    // JWT_SECRET: z.string().min(32),
+    JWT_SECRET: z.string().min(32),
 
     // client (optional on server side)
     VITE_API_URL: z.url().optional(),

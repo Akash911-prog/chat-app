@@ -4,6 +4,7 @@ import cors, { type CorsOptions } from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { errorHandler } from "./middlewares/errorHandler";
+import cookieParser from "cookie-parser";
 
 // routes
 import authRouter from "./routes/auth";
@@ -18,7 +19,7 @@ app.use(cors(corsOptions));
 
 // security policy
 app.use(helmet());
-
+app.use(cookieParser());
 //rate limit
 express.json({ limit: "10kb" });
 const apiLimit = rateLimit({
