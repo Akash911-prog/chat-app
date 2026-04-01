@@ -8,7 +8,7 @@ export function validateSchema(schema: ZodObject) {
 
         if (!result.success) {
             console.log(z.treeifyError(result.error));
-            throw Errors.INVALID_CREDENTIALS;
+            return next(Errors.INVALID_CREDENTIALS); // ← next(), not throw
         }
 
         req.body = result.data;

@@ -5,6 +5,8 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { errorHandler } from "./middlewares/errorHandler";
 import cookieParser from "cookie-parser";
+import "./config/passport";
+import passport from "passport";
 
 // routes
 import authRouter from "./routes/auth";
@@ -21,7 +23,7 @@ app.use(cors(corsOptions));
 app.use(helmet());
 app.use(cookieParser());
 //rate limit
-express.json({ limit: "10kb" });
+app.use(express.json({ limit: "10kb" }));
 const apiLimit = rateLimit({
     windowMs: 10 * 60 * 1000,
     limit: 100,
@@ -30,6 +32,8 @@ const apiLimit = rateLimit({
 });
 
 app.use(apiLimit);
+
+app.use(passport.initialize());
 
 app.get("/", (req, res) => {
     res.send("server running...");
