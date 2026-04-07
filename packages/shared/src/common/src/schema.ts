@@ -45,3 +45,21 @@ export const UpdateUserReqSchema = z
         message: "The to_update object cannot be empty",
         path: ["to_update"],
     });
+
+export const createRoomSchema = z.object({
+    creatorId: z.uuid(),
+    recipientId: z.uuid(),
+});
+
+export const sendMessageSchema = z.object({
+    roomId: z.uuid(),
+    senderId: z.uuid(),
+    cipherText: z.string(),
+    iv: z.string(),
+});
+
+export const getMessagesSchema = z.object({
+    roomId: z.uuid(),
+    take: z.number().optional().default(50),
+    cursor: z.string().optional(), // For pagination
+});

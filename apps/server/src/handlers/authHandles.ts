@@ -2,10 +2,8 @@ import type { Request, Response } from "express";
 import type { User } from "../generated/prisma/client";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/shared/env";
-import { Errors, SALT_ROUNDS } from "@repo/shared/common";
+import { Errors } from "@repo/shared/common";
 import { prisma } from "../libs/prisma";
-import type { registerData } from "@repo/shared";
-import bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
 
 function generateToken(user: User, refreshTokenId: string) {
