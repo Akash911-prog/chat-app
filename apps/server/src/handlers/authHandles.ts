@@ -103,31 +103,6 @@ export async function refresh(req: Request, res: Response) {
     }
 }
 
-export async function register(req: Request, res: Response) {
-    const data = req.body as registerData;
-    const existingUser = await prisma.user.findUnique({
-        where: {
-            username: data.username,
-        },
-    });
-
-    if (existingUser) throw Errors.USERNAME_TAKEN;
-
-    const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
-
-    const user = await prisma.user.create({
-        data: {
-            username: data.username,
-            passwordHash: hashedPassword,
-            publicKey: data.publicKey,
-        },
-    });
-
-    if (!user) throw Errors.INTERNAL;
-
-    return res.status(200).json({ success: true, user });
-}
-
 export async function logout(req: Request, res: Response) {
     const refreshToken: string = req.cookies.refreshToken;
     try {
@@ -137,7 +112,7 @@ export async function logout(req: Request, res: Response) {
             exp: number;
         };
 
-        await prisma.refreshToken.delete({
+        await prisma.refreshToken.deleteMany({
             where: {
                 id: payload.refreshTokenId,
             },

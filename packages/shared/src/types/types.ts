@@ -1,9 +1,14 @@
 import { z } from "zod";
-import { registerDataSchema } from "../common/src/schema";
+import {
+    getUserReqSchema,
+    registerUserReqSchema,
+    UpdateUserReqSchema,
+} from "../common/src/schema";
 
 export type PublicUser = {
     id: string;
     username: string;
+    role: "USER" | "ADMIN";
     publicKey: string;
     createdAt: Date;
 };
@@ -24,4 +29,6 @@ export type PublicMessage = {
     sentAt: Date;
 };
 
-export type registerData = z.infer<typeof registerDataSchema>;
+export type registerUserReq = z.infer<typeof registerUserReqSchema>;
+export type getUserReq = z.infer<typeof getUserReqSchema>;
+export type updateUserReq = z.infer<typeof UpdateUserReqSchema>;
