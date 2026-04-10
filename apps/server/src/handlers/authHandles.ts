@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import type { User } from "../generated/prisma/client";
 import jwt from "jsonwebtoken";
-import { env } from "@repo/shared/env";
+import { env } from "@repo/shared/env/server";
 import { Errors } from "@repo/shared/common";
 import { prisma } from "../libs/prisma";
 import { randomBytes } from "crypto";
@@ -51,7 +51,13 @@ export async function login(req: Request, res: Response) {
             httpOnly: true,
         });
 
-        res.status(200).json({ accessToken });
+        res.status(200).json({
+            accessToken,
+            cipher: user.cipher,
+            salt: user.salt,
+            iv: user.iv,
+            id: user.id,
+        });
     } catch (error) {
         console.error("[login]: ", error);
         throw Errors.INTERNAL;

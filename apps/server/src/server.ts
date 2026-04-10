@@ -1,4 +1,4 @@
-import { env } from "@repo/shared/env";
+import { env } from "@repo/shared/env/server";
 import express from "express";
 import cors, { type CorsOptions } from "cors";
 import helmet from "helmet";
@@ -10,6 +10,7 @@ import passport from "passport";
 
 // routes
 import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 app.use(errorHandler);
 

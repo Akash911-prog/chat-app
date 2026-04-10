@@ -5,6 +5,9 @@ export const registerUserReqSchema = z.object({
     username: z.string().regex(USERNAME_REGEX),
     password: z.string().min(8),
     publicKey: z.string(),
+    cipherText: z.string(),
+    salt: z.string(),
+    iv: z.string(),
 });
 
 export const getUserReqSchema = z
@@ -62,4 +65,35 @@ export const getMessagesSchema = z.object({
     roomId: z.uuid(),
     take: z.number().optional().default(50),
     cursor: z.string().optional(), // For pagination
+});
+
+export const registerUserFormSchema = z
+    .object({
+        username: z
+            .string()
+            .min(1, { error: "username is required" })
+            .regex(USERNAME_REGEX, { error: "only a-z, 0-9 and _ allowed" }),
+        password: z
+            .string()
+            .min(1, { error: "password required" })
+            .min(8, { error: "atleast 8 characters needed" }),
+        confirmPassword: z
+            .string()
+            .min(1, { error: "password required" })
+            .min(8, { error: "atleast 8 characters needed" }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        error: "Confirmed password does not match the given password",
+        path: ["password", "confirmPassword"],
+    });
+
+export const loginUserFormSchema = z.object({
+    username: z
+        .string()
+        .min(1, { error: "username is required" })
+        .regex(USERNAME_REGEX, { error: "only a-z, 0-9 and _ allowed" }),
+    password: z
+        .string()
+        .min(1, { error: "password required" })
+        .min(8, { error: "atleast 8 characters needed" }),
 });

@@ -6,6 +6,8 @@ import {
     createRoomSchema,
     sendMessageSchema,
     getMessagesSchema,
+    loginUserFormSchema,
+    registerUserFormSchema,
 } from "../common/src/schema";
 
 export type PublicUser = {
@@ -38,3 +40,5 @@ export type updateUserReq = z.infer<typeof UpdateUserReqSchema>;
 export type createRoomReq = z.infer<typeof createRoomSchema>;
 export type sendMessageReq = z.infer<typeof sendMessageSchema>;
 export type getMessagesReq = z.infer<typeof getMessagesSchema>;
+export type registerUserForm = z.infer<typeof registerUserFormSchema>;
+export type loginUserForm = z.infer<typeof loginUserFormSchema>;

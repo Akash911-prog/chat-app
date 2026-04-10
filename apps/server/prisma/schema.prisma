@@ -23,6 +23,9 @@ model User {
   passwordHash  String
   role          Role           @default(USER)
   publicKey     String
+  cipher        String
+  iv            String
+  salt          String
   refreshToken  String?
   createdAt     DateTime       @default(now())
   roomsAsA      Room[]         @relation("userA")

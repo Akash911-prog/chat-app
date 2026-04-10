@@ -4,7 +4,7 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import bcrypt from "bcrypt";
 import { prisma } from "../libs/prisma";
 import { Errors } from "@repo/shared/common";
-import { env } from "@repo/shared/env";
+import { env } from "@repo/shared/env/server";
 
 passport.use(
     "local",
@@ -17,7 +17,7 @@ passport.use(
             });
             if (!user) return done(null, false, Errors.USER_NOT_FOUND);
 
-            const match = bcrypt.compare(password, user.passwordHash);
+            const match = await bcrypt.compare(password, user.passwordHash);
             if (!match) return done(null, false, Errors.INVALID_CREDENTIALS);
 
             return done(null, user);

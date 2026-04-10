@@ -4,7 +4,8 @@
     "private": true,
     "exports": {
         ".": "./src/types/types.ts",
-        "./env": "./src/env/index.ts",
+        "./env/client": "./src/env/client.ts",
+        "./env/server": "./src/env/server.ts",
         "./common": "./src/common/src/index.ts"
     },
     "scripts": {

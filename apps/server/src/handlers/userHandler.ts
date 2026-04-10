@@ -27,6 +27,9 @@ export async function createUser(req: Request, res: Response) {
             username: data.username,
             passwordHash: hashedPassword,
             publicKey: data.publicKey,
+            cipher: data.cipherText,
+            iv: data.iv,
+            salt: data.salt,
         },
     });
 
