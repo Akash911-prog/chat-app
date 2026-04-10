@@ -11,12 +11,15 @@ import {
     registerUserReqSchema,
     UpdateUserReqSchema,
 } from "@repo/shared/common";
+import { authenticateToken } from "../middlewares/auth";
 
 const router = Router();
 
-router.get("/", validateSchema(getUserReqSchema), getUser);
-
 router.post("/", validateSchema(registerUserReqSchema), createUser);
+
+router.use(authenticateToken);
+
+router.get("/", validateSchema(getUserReqSchema), getUser);
 
 router.delete("/", validateSchema(getUserReqSchema), deleteUser);
 

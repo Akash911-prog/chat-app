@@ -52,7 +52,7 @@ export async function login(req: Request, res: Response) {
         });
 
         res.status(200).json({
-            accessToken,
+            accessToken: accessToken,
             cipher: user.cipher,
             salt: user.salt,
             iv: user.iv,
@@ -105,6 +105,16 @@ export async function refresh(req: Request, res: Response) {
         console.log("[refresh] Expired refresh Token Provided");
         throw Errors.UNAUTHORIZED;
     }
+
+    const accessToken = jwt.sign(
+        { userId: refreshTokenDb.userId },
+        env.JWT_SECRET,
+        {
+            expiresIn: "15m",
+        },
+    );
+
+    res.status(200).json({ accessToken });
 }
 
 export async function logout(req: Request, res: Response) {

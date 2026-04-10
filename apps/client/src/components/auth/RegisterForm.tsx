@@ -1,107 +1,45 @@
-import { Errors, registerUserFormSchema } from "@repo/shared/common";
+import { registerUserFormSchema } from "@repo/shared/common";
 import Button from "../ui/Buttons";
 import { FloatingInput } from "../ui/FloatingInput";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import type { registerUserForm, registerUserReq } from "@repo/shared";
+import { useForm, useWatch } from "react-hook-form";
+import type { registerUserForm } from "@repo/shared";
 import { useState } from "react";
 import { customToast } from "../../libs/toastHelper";
-import { clientEnv } from "@repo/shared/env/client";
-import {
-    generateKeyPair,
-    toBase64,
-    toBase64Safe,
-    wrapKey,
-} from "../../libs/keyGeneration";
-import { storePrivateKey } from "../../libs/indexDbHelpers";
+import { useRegisterAction } from "../../hooks/useRegisterAction";
 
 const RegisterForm = ({ onSwitch = () => {} }) => {
     const {
         register,
         handleSubmit,
         control,
-        formState: { errors },
-    } = useForm({
+        formState: { errors, isValid },
+    } = useForm<registerUserForm>({
         resolver: zodResolver(registerUserFormSchema),
+        mode: "onChange",
     });
 
-    const password = useWatch({
-        control: control,
-        name: "password",
-        defaultValue: "",
-    });
-
-    const username = useWatch({
-        control: control,
-        name: "username",
-        defaultValue: "",
-    });
-
-    const confirmPassword = useWatch({
-        control: control,
-        name: "confirmPassword",
-        defaultValue: "",
-    });
-
-    const isDisabled = !username || !password || password !== confirmPassword;
-
+    const { handleRegister, isSubmitting } = useRegisterAction();
     const [closed, setClosed] = useState({
         password: true,
         confirmPassword: true,
     });
 
-    const registerUser = async (data: registerUserReq) => {
-        const res = await fetch(`${clientEnv.VITE_SERVER_URL}/user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json", // Critical for JSON bodies
-                Accept: "application/json",
-            },
-            body: JSON.stringify(data),
+    // Watch values for immediate UI feedback
+    const password = useWatch({ control, name: "password", defaultValue: "" });
+    const confirmPassword = useWatch({
+        control,
+        name: "confirmPassword",
+        defaultValue: "",
+    });
+    const passwordsMatch = password === confirmPassword;
+
+    const onSubmit = async (data: registerUserForm) => {
+        await customToast.promise(handleRegister(data), {
+            success: "Successfully Registered",
+            loading: "Signing you up...",
+            error: "Registration failed. Please try again.",
         });
-
-        if (!res.ok) throw Errors.INVALID_CREDENTIALS;
-        return res.json();
-    };
-
-    const onSubmit: SubmitHandler<registerUserForm> = async (data) => {
-        const { publicKey, privateKey } = await generateKeyPair();
-
-        const { encryptedPrivateKey, salt, iv } = await wrapKey(
-            privateKey,
-            data.password,
-        );
-
-        const exportedPublicKey = toBase64Safe(
-            new Uint8Array(
-                await window.crypto.subtle.exportKey("raw", publicKey),
-            ),
-        );
-
-        const reqData: registerUserReq = {
-            username: data.username,
-            password: data.password,
-            publicKey: exportedPublicKey,
-            cipherText: encryptedPrivateKey,
-            iv: iv,
-            salt: salt,
-        };
-
-        const result = await customToast.promise(registerUser(reqData), {
-            success: "successfully Registered",
-            loading: "signing you up...",
-            error: "Failed. please try again later",
-        });
-
-        const nonExtractableKey = await crypto.subtle.importKey(
-            "pkcs8",
-            await crypto.subtle.exportKey("pkcs8", privateKey), // export raw bytes
-            { name: "ECDH", namedCurve: "P-256" },
-            false, // extractable: false
-            ["deriveKey", "deriveBits"],
-        );
-
-        await storePrivateKey(result.user.id, nonExtractableKey);
     };
 
     return (
@@ -129,20 +67,22 @@ const RegisterForm = ({ onSwitch = () => {} }) => {
                     error={errors.username?.message}
                     {...register("username")}
                 />
+
                 <FloatingInput
                     id="create-password"
                     label="password"
                     type="password"
                     closed={closed.password}
                     onClick={() =>
-                        setClosed({
-                            ...closed,
-                            password: !closed.password,
-                        })
+                        setClosed((prev) => ({
+                            ...prev,
+                            password: !prev.password,
+                        }))
                     }
                     error={errors.password?.message}
                     {...register("password")}
                 />
+
                 <div className="flex flex-col gap-2">
                     <FloatingInput
                         id="confirm-password"
@@ -150,18 +90,17 @@ const RegisterForm = ({ onSwitch = () => {} }) => {
                         type="password"
                         closed={closed.confirmPassword}
                         onClick={() =>
-                            setClosed({
-                                ...closed,
-                                confirmPassword: !closed.confirmPassword,
-                            })
+                            setClosed((prev) => ({
+                                ...prev,
+                                confirmPassword: !prev.confirmPassword,
+                            }))
                         }
                         error={errors.confirmPassword?.message}
                         {...register("confirmPassword")}
                     />
-
-                    {password !== confirmPassword && (
+                    {!passwordsMatch && confirmPassword.length > 0 && (
                         <p className="text-danger font-mono text-sm">
-                            {"confirm password and password doesnt match"}
+                            passwords do not match
                         </p>
                     )}
                 </div>
@@ -171,9 +110,9 @@ const RegisterForm = ({ onSwitch = () => {} }) => {
                 <Button
                     type="submit"
                     className="w-full py-2"
-                    disabled={isDisabled}
+                    disabled={isSubmitting || !isValid || !passwordsMatch}
                 >
-                    create account
+                    {isSubmitting ? "creating..." : "create account"}
                 </Button>
 
                 <p className="text-center font-mono text-[clamp(11px,13px,16px)] text-text-secondary">

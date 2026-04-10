@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Outlet } from "@tanstack/react-router";
 import "./App.css";
-// import Navbar from "./components/Navbar/Navbar";
 import { useThemeStore } from "./store/theme";
 
 function App() {
@@ -11,6 +10,7 @@ function App() {
     useEffect(() => {
         document.documentElement.classList.toggle("dark", theme === "dark");
     }, [theme]);
+
     return (
         <div>
             <Outlet />

@@ -34,6 +34,13 @@ export type PublicMessage = {
     sentAt: Date;
 };
 
+export interface RouterContext {
+    user: PublicUser | null;
+    auth: {
+        isAuthenticated: () => Promise<boolean>;
+    };
+}
+
 export type registerUserReq = z.infer<typeof registerUserReqSchema>;
 export type getUserReq = z.infer<typeof getUserReqSchema>;
 export type updateUserReq = z.infer<typeof UpdateUserReqSchema>;

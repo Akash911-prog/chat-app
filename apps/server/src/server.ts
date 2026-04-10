@@ -17,6 +17,7 @@ const app = express();
 // cors
 const corsOptions: CorsOptions = {
     origin: env.VITE_API_URL,
+    credentials: true,
 };
 app.use(cors(corsOptions));
 

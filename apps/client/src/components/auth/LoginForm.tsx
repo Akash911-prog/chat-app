@@ -1,80 +1,35 @@
-import Button from "../ui/Buttons";
-import { FloatingInput } from "../ui/FloatingInput";
-import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Errors, loginUserFormSchema } from "@repo/shared/common";
+import { loginUserFormSchema } from "@repo/shared/common";
 import type { loginUserForm } from "@repo/shared";
 import { useState } from "react";
-import { useKeyStore } from "../../store/accessKey";
-import { clientEnv } from "@repo/shared/env/client";
 import { customToast } from "../../libs/toastHelper";
-import { unwrapPrivateKey } from "../../libs/keyGeneration";
-import { getPrivateKey, storePrivateKey } from "../../libs/indexDbHelpers";
+import { useLoginAction } from "../../hooks/useLoginAction";
+
+// UI Components
+import Button from "../ui/Buttons";
+import { FloatingInput } from "../ui/FloatingInput";
 
 const LoginForm = ({ onSwitch = () => {} }) => {
+    const [closed, setClosed] = useState(true);
+    const { handleLogin, isSubmitting } = useLoginAction();
+
     const {
         register,
         handleSubmit,
-        control,
-        formState: { errors },
-    } = useForm({
+        formState: { errors, isValid },
+    } = useForm<loginUserForm>({
         resolver: zodResolver(loginUserFormSchema),
+        mode: "onChange",
     });
 
-    const keyStore = useKeyStore();
-
-    const [closed, setClosed] = useState(true);
-
-    const login = async (data: { username: string; password: string }) => {
-        const res = await fetch(`${clientEnv.VITE_SERVER_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json", // Critical for JSON bodies
-                Accept: "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!res.ok) throw Errors.INVALID_CREDENTIALS;
-
-        const { accessKey, cipher, iv, salt, id } = await res.json();
-
-        keyStore.setAccessKey(accessKey);
-
-        const privateKey = await unwrapPrivateKey(
-            cipher,
-            data.password,
-            salt,
-            iv,
-        );
-
-        const existing = await getPrivateKey(id);
-        if (!existing) {
-            await storePrivateKey(id, privateKey);
-        }
-    };
-
-    const onSubmit: SubmitHandler<loginUserForm> = async (data) => {
-        customToast.promise(login(data), {
-            success: "logged in successfully",
-            loading: "logging you in...",
-            error: "either the username or password is wrong",
+    const onSubmit = async (data: loginUserForm) => {
+        await customToast.promise(handleLogin(data), {
+            success: "Logged in successfully",
+            loading: "Logging you in...",
+            error: "Either the username or password is wrong",
         });
     };
-
-    const password = useWatch({
-        control: control,
-        name: "password",
-        defaultValue: "",
-    });
-
-    const username = useWatch({
-        control: control,
-        name: "username",
-        defaultValue: "",
-    });
-
-    const isDisabled = !password || !username;
 
     return (
         <>
@@ -99,7 +54,7 @@ const LoginForm = ({ onSwitch = () => {} }) => {
                     label="username"
                     type="text"
                     error={errors.username?.message}
-                    {...register("username", { required: true })}
+                    {...register("username")}
                 />
 
                 <FloatingInput
@@ -117,9 +72,9 @@ const LoginForm = ({ onSwitch = () => {} }) => {
                 <Button
                     type="submit"
                     className="w-full py-2"
-                    disabled={isDisabled}
+                    disabled={isSubmitting || !isValid}
                 >
-                    login
+                    {isSubmitting ? "logging in..." : "login"}
                 </Button>
 
                 <p className="text-center font-mono text-[11px] text-text-secondary">

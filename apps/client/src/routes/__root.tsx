@@ -1,9 +1,10 @@
 import * as React from "react";
-import { createRootRoute } from "@tanstack/react-router";
+import { createRootRouteWithContext } from "@tanstack/react-router";
 import App from "../App";
 import { ToastStack } from "../components/ui/ToastStack";
+import type { RouterContext } from "@repo/shared";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => {
         return (
             <React.Fragment>
