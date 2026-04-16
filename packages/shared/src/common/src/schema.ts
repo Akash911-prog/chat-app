@@ -61,12 +61,6 @@ export const sendMessageSchema = z.object({
     iv: z.string(),
 });
 
-export const getMessagesSchema = z.object({
-    roomId: z.uuid(),
-    take: z.number().optional().default(50),
-    cursor: z.string().optional(), // For pagination
-});
-
 export const registerUserFormSchema = z
     .object({
         username: z
@@ -96,4 +90,15 @@ export const loginUserFormSchema = z.object({
         .string()
         .min(1, { error: "password required" })
         .min(8, { error: "atleast 8 characters needed" }),
+});
+
+export const getMessagesSchema = z.object({
+    limit: z.number().default(20),
+    cursor: z
+        .object({
+            id: z.string(),
+            sentAt: z.date(),
+        })
+        .optional(),
+    roomId: z.string(),
 });

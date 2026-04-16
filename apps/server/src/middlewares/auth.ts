@@ -56,7 +56,7 @@ export const authenticateToken = (
 
         // 4. Verification successful!
         // Attach the user data (from the JWT payload) to the request
-        req.user = decodedPayload;
+        req.user = decodedPayload as { userId: string };
 
         // Move to the next function in the route
         next();

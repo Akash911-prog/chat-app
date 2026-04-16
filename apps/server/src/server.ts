@@ -7,10 +7,13 @@ import { errorHandler } from "./middlewares/errorHandler";
 import cookieParser from "cookie-parser";
 import "./config/passport";
 import passport from "passport";
+import { createServer } from "http";
 
 // routes
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
+import chatRouter from "./routes/chat";
+import { initSocket } from "./socket";
 
 const app = express();
 
@@ -47,9 +50,13 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
+app.use("/chat", chatRouter);
 
 app.use(errorHandler);
 
-app.listen(env.PORT, () => {
+const httpServer = createServer(app);
+initSocket(httpServer);
+
+httpServer.listen(env.PORT, () => {
     console.log(`App listening on port ${env.PORT}`);
 });
