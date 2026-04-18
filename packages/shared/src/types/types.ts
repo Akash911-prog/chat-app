@@ -21,7 +21,9 @@ export type PublicUser = {
 export type PublicRoom = {
     id: string;
     userAId: string;
+    usernameA: string;
     userBId: string;
+    usernameB: string;
     createdAt: Date;
 };
 
