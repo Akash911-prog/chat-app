@@ -16,7 +16,20 @@ const ChatList = () => {
                 </div>
             </header>
             <div className="border max-h-[80vh] h-[80vh] w-[95%] mx-auto">
-                <ChatListItem username="Akash" timeStamp="4:53 pm" />
+                {rooms.map((item) => {
+                    return (
+                        <ChatListItem
+                            key={item.id}
+                            username={item.username}
+                            timeStamp={item.lastMessageAt.toLocaleTimeString(
+                                undefined,
+                                {
+                                    timeStyle: "short",
+                                },
+                            )}
+                        />
+                    );
+                })}
             </div>
         </div>
     );

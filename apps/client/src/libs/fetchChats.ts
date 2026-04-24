@@ -1,7 +1,7 @@
 import { clientEnv } from "@repo/shared/env/client";
 import { useRoomStore } from "../store/room";
 import { apiFetch } from "./fetch";
-import type { PublicRoom } from "@repo/shared";
+import type { PublicRoom, Room } from "@repo/shared";
 
 export async function fetchChats() {
     const roomStore = useRoomStore.getState();
@@ -19,8 +19,21 @@ export async function fetchChats() {
             rooms: PublicRoom[];
         };
 
-        console.log(data);
-        roomStore.setRooms(data.rooms);
+        const rooms: Room[] = data.rooms.map((elem) => {
+            return {
+                id: elem.id,
+                userId:
+                    elem.userAId === data.userId ? elem.userBId : elem.userBId,
+                username:
+                    elem.userAId === data.userId
+                        ? elem.usernameB
+                        : elem.usernameA,
+                lastMessageAt: elem.lastMessageAt,
+                createdAt: elem.createdAt,
+            } as Room;
+        });
+
+        roomStore.setRooms(rooms);
         return;
     } catch (error) {
         console.log(error);

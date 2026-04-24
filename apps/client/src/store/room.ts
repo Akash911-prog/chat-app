@@ -1,10 +1,10 @@
-import type { PublicRoom } from "@repo/shared";
+import type { Room } from "@repo/shared";
 import { create } from "zustand";
 
 type RoomStore = {
-    rooms: PublicRoom[];
-    setRooms: (rooms: PublicRoom[]) => void;
-    addRoom: (room: PublicRoom) => void;
+    rooms: Room[];
+    setRooms: (rooms: Room[]) => void;
+    addRoom: (room: Room) => void;
     removeRoom: (roomId: string) => void;
 };
 

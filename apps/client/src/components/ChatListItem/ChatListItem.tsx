@@ -2,13 +2,11 @@ import React from "react";
 
 interface ChatListItemProps {
     username: string;
-    lastMessage?: string;
     timeStamp: string;
 }
 
 const ChatListItem = ({
     username = "Username",
-    lastMessage = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit autem, eos sequi reiciendis temporibus commodi quisquam, expedita velit eligendi quidem quibusdam animi iste.",
     timeStamp = "5:43 pm",
 }: ChatListItemProps) => {
     return (
@@ -24,9 +22,6 @@ const ChatListItem = ({
                     <div className="text-text-muted text-xs shrink-0">
                         {timeStamp}
                     </div>
-                </div>
-                <div className="text-sm text-text-muted truncate">
-                    {lastMessage}
                 </div>
             </div>
         </div>
