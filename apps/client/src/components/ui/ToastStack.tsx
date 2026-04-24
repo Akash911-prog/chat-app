@@ -5,15 +5,10 @@ import { CustomToastInner } from "./CustomToast";
 export function ToastStack() {
     const { toasts, handlers } = useToaster();
     const { startPause, endPause } = handlers;
-
     const visibleToasts = toasts.filter((t) => t.visible).slice(0, 4);
 
     return (
-        <div
-            className="fixed top-6 right-6 flex flex-col items-end"
-            onMouseEnter={startPause}
-            onMouseLeave={endPause}
-        >
+        <div className="fixed top-6 right-6 flex flex-col items-end pointer-events-none">
             <div
                 className="relative"
                 style={{ height: "60px", width: "280px" }}
@@ -31,20 +26,17 @@ export function ToastStack() {
                             key={t.id}
                             layout
                             initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                            animate={{
-                                opacity,
-                                y,
-                                scale,
-                                zIndex: i,
-                            }}
+                            animate={{ opacity, y, scale, zIndex: i }}
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{
                                 type: "spring" as const,
                                 stiffness: 200,
                                 damping: 20,
                             }}
-                            className="absolute bottom-0 right-0"
+                            className="absolute bottom-0 right-0 pointer-events-auto"
                             style={{ width: "280px" }}
+                            onMouseEnter={startPause}
+                            onMouseLeave={endPause}
                         >
                             <CustomToastInner t={t} isTop={isTop} />
                         </motion.div>

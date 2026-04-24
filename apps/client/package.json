@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -21,6 +21,7 @@
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.72.1",
     "react-hot-toast": "^2.6.0",
+    "styled-components": "^6.4.0",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
     "tanstack-query": "^1.0.0",

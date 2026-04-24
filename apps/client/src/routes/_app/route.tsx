@@ -1,6 +1,9 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import Navbar from "../../components/Navbar/Navbar";
+import Navbar, { HamburgerMenuItem } from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import HomeIcon from "../../icons/Home";
+import AddIcon from "../../icons/Add";
+import type { NavItem } from "../../clientTypes";
 
 export const Route = createFileRoute("/_app")({
     beforeLoad: async ({ context, location }) => {
@@ -17,10 +20,23 @@ export const Route = createFileRoute("/_app")({
 });
 
 function RouteComponent() {
+    const navItems: NavItem[] = [
+        { id: "home", label: "Home", icon: <HomeIcon /> },
+        {
+            id: "search",
+            label: "Search",
+            icon: <AddIcon />,
+        },
+        {
+            type: "custom",
+            id: "menu",
+            render: () => <HamburgerMenuItem />,
+        },
+    ];
     return (
         <div>
             <div className="sm:hidden min-h-screen min-w-screen">
-                <Navbar />
+                <Navbar items={navItems} defaultSelected="home" />
                 <Outlet />
             </div>
 

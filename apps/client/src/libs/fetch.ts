@@ -36,6 +36,7 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
                 keyStore.logout();
             }
         } catch (err) {
+            console.log(err);
             keyStore.logout();
         }
     }

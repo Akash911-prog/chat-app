@@ -1,9 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import ChatList from "../../pages/chatList";
+import { fetchChats } from "../../libs/fetchChats";
 
-export const Route = createFileRoute('/_app/')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/_app/")({
+    loader: fetchChats,
+    component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/_app/"!</div>
+    return (
+        <div>
+            <ChatList />
+        </div>
+    );
 }

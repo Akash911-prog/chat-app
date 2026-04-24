@@ -21,9 +21,18 @@ export type PublicUser = {
 export type PublicRoom = {
     id: string;
     userAId: string;
-    usernameA: string;
     userBId: string;
+    usernameA: string;
     usernameB: string;
+    lastMessageAt: Date;
+    createdAt: Date;
+};
+
+export type Room = {
+    id: string;
+    userId: string;
+    username: string;
+    lastMessageAt: Date;
     createdAt: Date;
 };
 
