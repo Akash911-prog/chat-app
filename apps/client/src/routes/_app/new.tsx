@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_app/new")({
 
 function RouteComponent() {
     return (
-        <div>
+        <div className="h-full">
             <NewChat />
         </div>
     );

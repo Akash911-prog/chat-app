@@ -37,7 +37,7 @@ function RouteComponent() {
 
     return (
         <div>
-            <div className="sm:hidden min-h-screen min-w-screen">
+            <div className="sm:hidden min-h-screen min-w-screen h-screen">
                 <Navbar items={navItems} defaultSelected="home" />
                 <Outlet />
             </div>

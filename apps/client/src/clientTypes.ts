@@ -15,3 +15,8 @@ export interface CustomNavItem {
 }
 
 export type NavItem = BubbleNavItem | CustomNavItem;
+
+export type safeUser = {
+    id: string;
+    username: string;
+};

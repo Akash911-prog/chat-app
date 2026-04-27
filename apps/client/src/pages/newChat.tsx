@@ -2,25 +2,69 @@ import { useState } from "react";
 import SearchBar from "../components/ui/SearchBar";
 import { useDebounce } from "../hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
+import type { safeUser } from "../clientTypes";
+import UserListItem from "../components/UserListItem/UserListItem";
+import { apiFetch } from "../libs/fetch";
+import { clientEnv } from "@repo/shared/env/client";
+import Search from "../icons/Search";
+import { motion } from "motion/react";
 
 const NewChat = () => {
     const [query, setQuery] = useState("");
-    const debouncedQuery = useDebounce(query, 300);
+    const debouncedQuery = useDebounce(query, 150);
 
-    const { data: users = [] } = useQuery<>({
+    const { data: users = [] } = useQuery<safeUser[]>({
         queryKey: ["users", "search", debouncedQuery],
         queryFn: async () => {
-            const res = await fetch(`/users/search?q=${debouncedQuery}`);
-            return res.json();
+            const res = await apiFetch(
+                `${clientEnv.VITE_SERVER_URL}/chat/users?query=${debouncedQuery}`,
+            );
+            const { users } = await res.json();
+            return users;
         },
-        enabled: debouncedQuery.trim().length > 0, // don't fetch if empty
+        enabled: debouncedQuery.trim().length > 0,
     });
 
     return (
-        <div>
-            <SearchBar setQuery={setQuery} />
-            {users}
-            <div></div>
+        <div className="flex flex-col h-full">
+            <div className="pt-5">
+                <SearchBar setQuery={setQuery} />
+            </div>
+            <div
+                className={`${users.length <= 0 ? "flex-1 flex items-center justify-center flex-col" : ""}`}
+            >
+                {users.length > 0 ? (
+                    <motion.div
+                        key="users"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {users.map((user) => (
+                            <UserListItem
+                                key={user.id}
+                                username={user.username}
+                                // TODO: ADD button interactivity.
+                            />
+                        ))}
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="empty"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex flex-col items-center justify-center gap-2 text-text-muted"
+                    >
+                        <Search size={44} strokeWidth={1.5} />
+                        <p className="font-medium text-lg">
+                            Find someone to chat with
+                        </p>
+                    </motion.div>
+                )}
+            </div>
         </div>
     );
 };
