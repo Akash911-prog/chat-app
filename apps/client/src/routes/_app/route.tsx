@@ -21,10 +21,11 @@ export const Route = createFileRoute("/_app")({
 
 function RouteComponent() {
     const navItems: NavItem[] = [
-        { id: "home", label: "Home", icon: <HomeIcon /> },
+        { id: "home", label: "Home", url: "/", icon: <HomeIcon /> },
         {
-            id: "search",
-            label: "Search",
+            id: "new",
+            label: "New Chat",
+            url: "/new",
             icon: <AddIcon />,
         },
         {
@@ -33,6 +34,7 @@ function RouteComponent() {
             render: () => <HamburgerMenuItem />,
         },
     ];
+
     return (
         <div>
             <div className="sm:hidden min-h-screen min-w-screen">

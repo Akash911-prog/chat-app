@@ -1,3 +1,4 @@
+import { clientEnv } from "@repo/shared/env/client";
 import { useKeyStore } from "../store/accessKey";
 
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
@@ -17,9 +18,13 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
         try {
             // 3. Attempt to refresh the token
             // Assuming your backend reads the Refresh Token from an httpOnly cookie
-            const refreshRes = await fetch("/api/auth/refresh", {
-                method: "POST",
-            });
+            const refreshRes = await fetch(
+                `${clientEnv.VITE_SERVER_URL}/auth/refresh`,
+                {
+                    method: "GET",
+                    credentials: "include",
+                },
+            );
 
             if (refreshRes.ok) {
                 const data = await refreshRes.json();

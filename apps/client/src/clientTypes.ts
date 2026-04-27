@@ -3,6 +3,7 @@ export interface BubbleNavItem {
     type?: "bubble"; // default
     id: string;
     label: string;
+    url: string;
     icon: React.ReactNode;
 }
 

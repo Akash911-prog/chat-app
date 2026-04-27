@@ -13,6 +13,7 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AppNewRouteImport } from './routes/_app/new'
 import { Route as AppChatIdRouteImport } from './routes/_app/chat.$id'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -33,6 +34,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AppNewRoute = AppNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppChatIdRoute = AppChatIdRouteImport.update({
   id: '/chat/$id',
   path: '/chat/$id',
@@ -41,11 +47,13 @@ const AppChatIdRoute = AppChatIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/new': typeof AppNewRoute
   '/login': typeof AuthLoginRoute
   '/chat/$id': typeof AppChatIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
+  '/new': typeof AppNewRoute
   '/login': typeof AuthLoginRoute
   '/chat/$id': typeof AppChatIdRoute
 }
@@ -53,19 +61,21 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteRouteWithChildren
   '/_auth': typeof AuthRouteRouteWithChildren
+  '/_app/new': typeof AppNewRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_app/': typeof AppIndexRoute
   '/_app/chat/$id': typeof AppChatIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/chat/$id'
+  fullPaths: '/' | '/new' | '/login' | '/chat/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/chat/$id'
+  to: '/' | '/new' | '/login' | '/chat/$id'
   id:
     | '__root__'
     | '/_app'
     | '/_auth'
+    | '/_app/new'
     | '/_auth/login'
     | '/_app/'
     | '/_app/chat/$id'
@@ -106,6 +116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_app/new': {
+      id: '/_app/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof AppNewRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/chat/$id': {
       id: '/_app/chat/$id'
       path: '/chat/$id'
@@ -117,11 +134,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteRouteChildren {
+  AppNewRoute: typeof AppNewRoute
   AppIndexRoute: typeof AppIndexRoute
   AppChatIdRoute: typeof AppChatIdRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppNewRoute: AppNewRoute,
   AppIndexRoute: AppIndexRoute,
   AppChatIdRoute: AppChatIdRoute,
 }

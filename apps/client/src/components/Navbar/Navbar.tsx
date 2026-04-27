@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { BubbleNavItem, NavItem } from "../../clientTypes";
 import MenuIcon from "../../icons/Profile";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 interface NavbarProps {
     items: NavItem[];
@@ -114,13 +115,20 @@ export default function Navbar({
     const bubbleItems = items.filter(
         (i): i is BubbleNavItem => i.type !== "custom",
     );
+
+    const { pathname: currentPath } = useLocation();
     const [selected, setSelected] = useState(
-        defaultSelected ?? bubbleItems[0]?.id,
+        () =>
+            bubbleItems.find((i) => i.url === currentPath)?.id ??
+            defaultSelected ??
+            bubbleItems[0].id,
     );
     // bubbleX is the center of the active button relative to the navbar's left edge
     const [bubbleX, setBubbleX] = useState<number | null>(null);
     const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     const navRef = useRef<HTMLDivElement>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const el = itemRefs.current[selected];
@@ -166,7 +174,7 @@ export default function Navbar({
                     const isActive = item.id === selected;
 
                     return (
-                        <div>
+                        <div key={item.id}>
                             {bubbleX !== null && (
                                 <motion.div
                                     className="absolute pointer-events-none"
@@ -197,11 +205,13 @@ export default function Navbar({
                                 </motion.div>
                             )}
                             <button
-                                key={item.id}
                                 ref={(el) => {
                                     itemRefs.current[item.id] = el;
                                 }}
-                                onClick={() => handleSelect(item.id)}
+                                onClick={() => {
+                                    handleSelect(item.id);
+                                    navigate({ to: item.url });
+                                }}
                                 className={`relative flex flex-col items-center justify-center rounded-xl focus:outline-none`}
                                 style={{ width: 68, height: 56 }}
                                 aria-label={item.label}

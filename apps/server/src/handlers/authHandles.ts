@@ -92,7 +92,10 @@ export async function refresh(req: Request, res: Response) {
         }
     }
 
-    if (!payload) throw Errors.UNAUTHORIZED;
+    if (!payload) {
+        console.log("Wrong payload  ");
+        throw Errors.UNAUTHORIZED;
+    }
 
     const refreshTokenDb = await prisma.refreshToken.findUnique({
         where: {
@@ -102,9 +105,12 @@ export async function refresh(req: Request, res: Response) {
 
     if (!refreshTokenDb) throw Errors.NOT_FOUND;
 
-    if (!refreshTokenDb.expiresAt) throw Errors.UNAUTHORIZED;
+    if (!refreshTokenDb.expiresAt) {
+        console.log("Expired");
+        throw Errors.UNAUTHORIZED;
+    }
 
-    if (new Date(Date.now()) > refreshTokenDb.expiresAt) {
+    if (new Date() > refreshTokenDb.expiresAt) {
         console.log("[refresh] Expired refresh Token Provided");
         throw Errors.UNAUTHORIZED;
     }

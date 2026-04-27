@@ -36,12 +36,13 @@ export const authenticateToken = (
 
     // If there's no token at all
     if (!token) {
+        console.log("NO Access Token. Unautharised");
         throw Errors.FORBIDDEN;
     }
-
     // 2. Verify the token
     jwt.verify(token, env.JWT_SECRET, (err, decodedPayload) => {
         if (err) {
+            console.error(err);
             // 3. Send specific error messages based on the failure
             const message =
                 err.name === "TokenExpiredError"

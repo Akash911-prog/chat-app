@@ -92,3 +92,27 @@ export async function getMessages(req: Request, res: Response) {
                 : null,
     });
 }
+
+export async function searchUsers(req: Request, res: Response) {
+    const { query } = req.query as { query: string };
+
+    if (!query || query.trim() === "") {
+        return res.status(200).json({ users: [] });
+    }
+
+    const users = await prisma.user.findMany({
+        where: {
+            username: {
+                contains: query,
+                mode: "insensitive",
+            },
+        },
+        take: 10,
+        select: {
+            id: true,
+            username: true,
+        },
+    });
+
+    return res.status(200).json({ users });
+}

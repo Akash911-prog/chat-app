@@ -1,6 +1,10 @@
 import React from "react";
 
-const Searchbar = () => {
+const Searchbar = ({
+    setQuery = () => {},
+}: {
+    setQuery?: (value: string) => void;
+}) => {
     return (
         <div className="px-2 w-full max-w-full">
             <label
@@ -33,6 +37,7 @@ const Searchbar = () => {
                     className="block w-full p-4 py-2 ps-10 text-lg text-text-primary border border-border rounded-lg bg-bg-subtle focus:ring-accent outline-none focus:border-accent"
                     id="default-search"
                     type="search"
+                    onChange={(e) => setQuery(e.target.value)}
                 />
             </div>
         </div>

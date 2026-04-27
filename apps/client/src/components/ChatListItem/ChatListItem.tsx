@@ -11,7 +11,7 @@ const ChatListItem = ({
 }: ChatListItemProps) => {
     return (
         <div className="flex items-center min-h-18 px-4 py-3 gap-3">
-            <div className="flex items-center justify-center h-11 w-11 shrink-0 rounded-full bg-accent-muted text-accent-hover font-semibold text-lg">
+            <div className="flex items-center justify-center size-2xl shrink-0 rounded-full bg-accent-muted text-accent-hover font-semibold text-lg">
                 {username[0].toUpperCase()}
             </div>
             <div className="flex flex-col justify-center min-w-0 flex-1">
