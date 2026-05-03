@@ -3,6 +3,7 @@ import { Outlet } from "@tanstack/react-router";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import "./App.css";
 import { useThemeStore } from "./store/theme";
+import SocketProvider from "./components/SocketProvider/SocketProvider";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +18,9 @@ function App() {
     return (
         <div>
             <QueryClientProvider client={queryClient}>
-                <Outlet />
+                <SocketProvider>
+                    <Outlet />
+                </SocketProvider>
             </QueryClientProvider>
         </div>
     );

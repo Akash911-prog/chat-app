@@ -54,12 +54,21 @@ export async function login(req: Request, res: Response) {
             secure: false,
         });
 
+        const {
+            passwordHash,
+            cipher,
+            iv,
+            salt,
+            refreshToken: db,
+            ...safeUser
+        } = user;
+
         res.status(200).json({
             accessToken: accessToken,
             cipher: user.cipher,
             salt: user.salt,
             iv: user.iv,
-            id: user.id,
+            user: safeUser,
         });
     } catch (error) {
         console.error("[login]: ", error);

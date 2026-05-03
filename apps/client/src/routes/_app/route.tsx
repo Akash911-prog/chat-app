@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import {
+    createFileRoute,
+    Outlet,
+    redirect,
+    useLocation,
+} from "@tanstack/react-router";
 import Navbar, { HamburgerMenuItem } from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import HomeIcon from "../../icons/Home";
@@ -35,10 +40,15 @@ function RouteComponent() {
         },
     ];
 
+    const { pathname } = useLocation();
+    const isChatRoute = pathname.startsWith("/chat");
+
     return (
         <div>
             <div className="sm:hidden min-h-screen min-w-screen h-screen">
-                <Navbar items={navItems} defaultSelected="home" />
+                {!isChatRoute && (
+                    <Navbar items={navItems} defaultSelected="home" />
+                )}
                 <Outlet />
             </div>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import SearchBar from "../components/ui/SearchBar";
 import { useDebounce } from "../hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
@@ -8,10 +8,13 @@ import { apiFetch } from "../libs/fetch";
 import { clientEnv } from "@repo/shared/env/client";
 import Search from "../icons/Search";
 import { motion } from "motion/react";
+import socket from "../libs/socket";
+import { router } from "../main";
 
 const NewChat = () => {
     const [query, setQuery] = useState("");
     const debouncedQuery = useDebounce(query, 150);
+    const user = router.options.context.user;
 
     const { data: users = [] } = useQuery<safeUser[]>({
         queryKey: ["users", "search", debouncedQuery],
@@ -24,6 +27,15 @@ const NewChat = () => {
         },
         enabled: debouncedQuery.trim().length > 0,
     });
+
+    const onClick = (otherUserId: string, otherUsername: string) => {
+        socket.emit("join_room", {
+            userId: user?.id,
+            username: user?.username,
+            otherUserId: otherUserId,
+            otherUsername: otherUsername,
+        });
+    };
 
     return (
         <div className="flex flex-col h-full">
@@ -45,7 +57,7 @@ const NewChat = () => {
                             <UserListItem
                                 key={user.id}
                                 username={user.username}
-                                // TODO: ADD button interactivity.
+                                onClick={() => onClick(user.id, user.username)}
                             />
                         ))}
                     </motion.div>

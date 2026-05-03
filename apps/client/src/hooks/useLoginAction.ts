@@ -6,6 +6,7 @@ import { Errors } from "@repo/shared/common";
 import { unwrapPrivateKey } from "../libs/keyGeneration";
 import { getPrivateKey, storePrivateKey } from "../libs/indexDbHelpers";
 import type { loginUserForm } from "@repo/shared";
+import { router } from "../main";
 
 export const useLoginAction = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +30,7 @@ export const useLoginAction = () => {
 
             if (!res.ok) throw Errors.INVALID_CREDENTIALS;
 
-            const { accessToken, cipher, iv, salt, id } = await res.json();
+            const { accessToken, cipher, iv, salt, user } = await res.json();
 
             // 2. Set Access Token in State
             keyStore.setAccessKey(accessToken);
@@ -43,10 +44,12 @@ export const useLoginAction = () => {
             );
 
             // 4. Persistence: Ensure the key is in IndexedDB for this session/device
-            const existing = await getPrivateKey(id);
+            const existing = await getPrivateKey(user.id);
             if (!existing) {
-                await storePrivateKey(id, privateKey);
+                await storePrivateKey(user.id, privateKey);
             }
+
+            router.options.context.user = user;
 
             // 5. Success
             navigate({ to: "/" });

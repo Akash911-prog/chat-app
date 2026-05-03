@@ -44,37 +44,21 @@ export function initSocket(server: httpServer) {
             catchSocket(
                 socket,
                 async (data: {
-                    roomId: string;
+                    roomId?: string;
                     userId: string;
                     username: string;
                     otherUserId: string;
                     otherUsername: string;
                 }) => {
-                    const roomExists = await prisma.room.count({
-                        where: {
-                            AND: [
-                                { id: data.roomId },
-                                {
-                                    OR: [
-                                        { userAId: data.userId },
-                                        { userBId: data.userId },
-                                    ],
-                                },
-                            ],
-                        },
-                    });
-
-                    if (!roomExists) {
+                    if (!data.roomId) {
                         const room = await createRoom(
                             data.userId,
                             data.username,
                             data.otherUserId,
                             data.otherUsername,
                         );
-
                         data.roomId = room.id;
                     }
-
                     socket.data.rooms.add(data.roomId);
                     socket.join(data.roomId);
                 },

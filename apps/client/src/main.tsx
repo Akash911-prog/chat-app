@@ -13,7 +13,7 @@ const routerContext = {
     },
 };
 
-const router = createRouter({ routeTree, context: routerContext });
+export const router = createRouter({ routeTree, context: routerContext });
 
 declare module "@tanstack/react-router" {
     interface Register {
